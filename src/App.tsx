@@ -1,24 +1,22 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import "remixicon/fonts/remixicon.css";
+
+// contexts
+import ThemeContext from "./contexts/ThemeContext";
+
+// components
+import TicketContent from "./components/TicketContent";
+import PendingTickets from "./components/PendingTickets";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ThemeContext>
+        <div className="flex w-screen min-h-screen bg-gradient-to-b from-sky-500 to-indigo-500 p-6">
+          <PendingTickets />
+          <TicketContent />
+        </div>
+      </ThemeContext>
     </div>
   );
 }

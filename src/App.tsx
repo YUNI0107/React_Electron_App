@@ -1,24 +1,21 @@
-import "./App.css";
-import "remixicon/fonts/remixicon.css";
+import { useState } from "react"
+import "./App.css"
+import "remixicon/fonts/remixicon.css"
 
 // contexts
-import ThemeContext from "./contexts/ThemeContext";
-
-// components
-import TicketContent from "./components/TicketContent";
-import PendingTickets from "./components/PendingTickets";
+import ThemeContext from "./contexts/ThemeContext"
+import CounterSection from "./components/CounterSection/CounterSection"
 
 function App() {
+  const [totalSeconds, setTotalSeconds] = useState(0)
+
   return (
     <div className="App">
       <ThemeContext>
-        <div className="flex w-screen min-h-screen bg-gradient-to-b from-sky-500 to-indigo-500 p-6">
-          <PendingTickets />
-          <TicketContent />
-        </div>
+        <CounterSection totalSeconds={totalSeconds} />
       </ThemeContext>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

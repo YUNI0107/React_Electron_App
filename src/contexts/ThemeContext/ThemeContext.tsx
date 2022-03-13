@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { ReactNode } from "react";
+import React, { useEffect, useState } from "react"
+import { ReactNode } from "react"
 
-const defaultTheme = "dark";
-export const ModeThemeContext = React.createContext<"dark" | "day">(
+const defaultTheme = "dark"
+export const ModeThemeContext = React.createContext<"dark" | "light">(
   defaultTheme
-);
+)
 
 function ThemeContext({ children }: { children: ReactNode }) {
-  const [mode, setMode] = useState<"dark" | "day">("dark");
+  const [mode, setMode] = useState<"dark" | "light">("dark")
 
   useEffect(() => {
     window.darkMode.getSystem((_event, value) => {
-      setMode(value);
-    });
-  }, []);
+      setMode(value)
+    })
+  }, [])
 
   return (
     <ModeThemeContext.Provider value={mode}>
       {children}
     </ModeThemeContext.Provider>
-  );
+  )
 }
 
-export default ThemeContext;
+export default ThemeContext

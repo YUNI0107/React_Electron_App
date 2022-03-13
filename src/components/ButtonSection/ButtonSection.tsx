@@ -1,14 +1,32 @@
+import classNames from "classnames"
 import { useContext } from "react"
 import { ModeThemeContext } from "../../contexts/ThemeContext"
 
-function ButtonSection() {
-  const mode = useContext(ModeThemeContext)
-
+function ButtonSection({
+  startCount,
+  pauseCount,
+  resetCount,
+  isPauseMode,
+}: {
+  startCount: () => void
+  pauseCount: () => void
+  resetCount: () => void
+  isPauseMode: boolean
+}) {
   return (
     <div>
-      <button>Go</button>
-      <button>Pause</button>
-      <button>Reset</button>
+      <button className="btn" onClick={startCount}>
+        Go
+      </button>
+      <button className="btn m-5" onClick={pauseCount}>
+        Pause
+      </button>
+      <button
+        className={classNames("btn", { "btn-disable": !isPauseMode })}
+        onClick={resetCount}
+      >
+        Reset
+      </button>
     </div>
   )
 }

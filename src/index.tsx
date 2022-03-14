@@ -12,9 +12,15 @@ export interface IDarkMode {
   ) => Promise<void>
 }
 
+export interface IClock {
+  timeUpShowWindow: () => void
+  timeGo: (callback: (_event: any) => void) => void
+}
+
 declare global {
   interface Window {
     darkMode: IDarkMode
+    clock: IClock
   }
 }
 

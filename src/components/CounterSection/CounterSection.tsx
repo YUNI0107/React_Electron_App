@@ -10,12 +10,12 @@ import TimeBlock from "../TimeBlock"
 
 // images
 import RocketImage from "../../assets/rocket.gif"
-import SolarImage from "../../assets/solar-system.gif"
 
 function CounterSection() {
   const [totalSeconds, setTotalSeconds] = useState(0)
   const [isPauseMode, setIsPauseMode] = useState(true)
   const timer = useRef<number | null>(null)
+  const callback = useRef<() => void>(null!)
   const mode = useContext(ModeThemeContext)
 
   // time convert
@@ -52,20 +52,24 @@ function CounterSection() {
 
     if (direction === "up") {
       if (totalSeconds + timeNumber > 60 * 60 * 60) return
-      setTotalSeconds((oldValue) => oldValue + timeNumber)
+      setTotalSeconds((previousValue) => previousValue + timeNumber)
     } else if (direction === "down") {
       if (totalSeconds - timeNumber < 0) return
-      setTotalSeconds((oldValue) => oldValue - timeNumber)
+      setTotalSeconds((previousValue) => previousValue - timeNumber)
     }
   }
 
-  const startCount = () => {
-    if (totalSeconds <= 0) return
-    setIsPauseMode(false)
-    setTotalSeconds((oldValue) => oldValue - 1)
+  callback.current = () => {
+    console.log("start", totalSeconds, isPauseMode, timer.current)
+    if (totalSeconds <= 0 || (timer.current && isPauseMode)) return
 
-    timer.current = window.setInterval(() => {
-      setTotalSeconds((oldValue) => oldValue - 1)
+    setIsPauseMode(false)
+    setTotalSeconds((previousValue) => previousValue - 1)
+
+    timer.current = window.setTimeout(function () {
+      timer.current = null
+      console.log(callback.current)
+      callback.current()
     }, 1000)
   }
 
@@ -80,7 +84,7 @@ function CounterSection() {
   const clearTimer = () => {
     if (!timer.current) return
 
-    clearInterval(timer.current)
+    clearTimeout(timer.current)
     timer.current = null
     setIsPauseMode(true)
   }
@@ -90,12 +94,23 @@ function CounterSection() {
     if (totalSeconds <= 0) {
       // Times up
       clearTimer()
-      if (!isPauseMode)
+      if (!isPauseMode) {
         new Notification("Times Up", {
           body: "Times Up! Do you finish your work?",
         })
+        window.clock.timeUpShowWindow()
+      }
     }
   }, [totalSeconds, isPauseMode])
+
+  useEffect(() => {
+    window.clock.timeGo((_event) => {
+      console.log("startCount")
+
+      if (timer.current) return
+      callback.current()
+    })
+  }, [])
 
   useEffect(() => {
     //  clear timer
@@ -103,6 +118,8 @@ function CounterSection() {
       clearTimer()
     }
   }, [])
+
+  if (!mode) return <div className="w-screen h-screen bg-cyan-200"></div>
 
   return (
     <div
@@ -112,7 +129,7 @@ function CounterSection() {
       })}
     >
       <div className="flex-1 flex justify-center items-center flex-col">
-        <div className="w-32 mb-4">
+        <div className="w-24 mb-6">
           <img className="w-full" src={RocketImage} alt="space-img" />
         </div>
 
@@ -138,7 +155,7 @@ function CounterSection() {
         </div>
 
         <ButtonSection
-          startCount={startCount}
+          startCount={callback.current}
           pauseCount={pauseCount}
           resetCount={resetCount}
           isPauseMode={isPauseMode}

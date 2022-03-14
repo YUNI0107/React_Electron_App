@@ -1,6 +1,4 @@
 import classNames from "classnames"
-import { useContext } from "react"
-import { ModeThemeContext } from "../../contexts/ThemeContext"
 
 function ButtonSection({
   startCount,

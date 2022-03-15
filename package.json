@@ -1,5 +1,5 @@
 {
-  "name": "react-electron",
+  "name": "count-down-clock",
   "version": "0.1.0",
   "private": true,
   "homepage": ".",
@@ -23,11 +23,13 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set BROWSER=none && react-scripts start",
     "electron-start": "wait-on tcp:3000 && electron .",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "package": "electron-forge package",
+    "make": "react-scripts build && electron-forge make"
   },
   "eslintConfig": {
     "extends": [
@@ -48,9 +50,40 @@
     ]
   },
   "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.63",
     "autoprefixer": "^10.4.2",
     "electron": "^17.1.2",
     "postcss": "^8.4.8",
     "tailwindcss": "^3.0.23"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "name": "CountDown Clock",
+        "icon": "src/assets/icon_m.icns"
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "react_electron"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
   }
 }

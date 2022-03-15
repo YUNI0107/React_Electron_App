@@ -3,18 +3,21 @@ import ReactDOM from "react-dom"
 import "./index.css"
 import App from "./App"
 import reportWebVitals from "./reportWebVitals"
+import { IpcRendererEvent } from "electron"
 
 export interface IDarkMode {
   toggle: () => Promise<void>
   system: () => Promise<void>
   getSystem: (
-    callback: (_event: any, value: "light" | "dark") => void
+    callback: (_event: IpcRendererEvent, value: "light" | "dark") => void
   ) => Promise<void>
 }
 
 export interface IClock {
   timeUpShowWindow: () => void
-  timeGo: (callback: (_event: any) => void) => void
+  timeGo: (callback: (_event: IpcRendererEvent) => void) => void
+  timePause: (callback: (_event: IpcRendererEvent) => void) => void
+  getPauseMode: (isPauseMode: boolean) => void
 }
 
 declare global {

@@ -53,20 +53,41 @@ app.whenReady().then(() => {
     mainWindow.show()
   })
 
+  ipcMain.handle("clock:get-pause-mode", (_, isPauseMode) => {
+    if (isPauseMode) {
+      // Pause
+      contextMenu.items[1].checked = true
+    } else {
+      // Go
+      contextMenu.items[0].checked = true
+    }
+  })
+
   // create tray
-  const icon = nativeImage.createFromPath("src/assets/icon.png")
+  const iconPath = path.join(__dirname, "src/assets/icon.png")
+  const icon = nativeImage.createFromPath(iconPath)
   tray = new Tray(icon)
 
   const contextMenu = Menu.buildFromTemplate([
     {
       label: "Go",
       type: "radio",
-      checked: true,
-      click: () => {
+      checked: false,
+      click: (menuItem) => {
+        menuItem.checked = true
         mainWindow.webContents.send("clock:go")
       },
     },
-    { label: "Pause", type: "radio", checked: true },
+    {
+      label: "Pause",
+      type: "radio",
+      checked: false,
+      click: (menuItem) => {
+        menuItem.checked = true
+        mainWindow.webContents.send("clock:pause")
+      },
+    },
+
     {
       label: "Open Clock",
       type: "normal",

@@ -15,7 +15,7 @@ function CounterSection() {
   const [totalSeconds, setTotalSeconds] = useState(0)
   const [isPauseMode, setIsPauseMode] = useState(true)
   const timer = useRef<number | null>(null)
-  const callback = useRef<() => void>(null!)
+  const startCallback = useRef<() => void>(null!)
   const mode = useContext(ModeThemeContext)
 
   // time convert
@@ -59,8 +59,7 @@ function CounterSection() {
     }
   }
 
-  callback.current = () => {
-    console.log("start", totalSeconds, isPauseMode, timer.current)
+  startCallback.current = () => {
     if (totalSeconds <= 0 || (timer.current && isPauseMode)) return
 
     setIsPauseMode(false)
@@ -68,8 +67,7 @@ function CounterSection() {
 
     timer.current = window.setTimeout(function () {
       timer.current = null
-      console.log(callback.current)
-      callback.current()
+      startCallback.current()
     }, 1000)
   }
 
@@ -104,13 +102,22 @@ function CounterSection() {
   }, [totalSeconds, isPauseMode])
 
   useEffect(() => {
-    window.clock.timeGo((_event) => {
-      console.log("startCount")
+    // register tray event
 
+    window.clock.timeGo((_) => {
       if (timer.current) return
-      callback.current()
+      startCallback.current()
     })
+
+    window.clock.timePause((_) => {
+      pauseCount()
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    window.clock.getPauseMode(isPauseMode)
+  }, [isPauseMode])
 
   useEffect(() => {
     //  clear timer
@@ -155,7 +162,7 @@ function CounterSection() {
         </div>
 
         <ButtonSection
-          startCount={callback.current}
+          startCount={startCallback.current}
           pauseCount={pauseCount}
           resetCount={resetCount}
           isPauseMode={isPauseMode}
